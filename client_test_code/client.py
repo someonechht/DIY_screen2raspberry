@@ -1,5 +1,4 @@
 # importing the required packages
-from os import wait
 import pyautogui
 import numpy as np
 import cv2
@@ -19,9 +18,9 @@ server.connect((ip, 1024))
 
 # np.array(pyautogui.screenshot())
 server.send(bytes(str(resolution.width), 'utf8'))
-pyautogui.sleep(0.5)
+pyautogui.sleep(0.25)
 server.send(bytes(str(resolution.height), 'utf8'))
-
+pyautogui.sleep(0.25)
 image = screencapture.capture_screenshot()
 print(len(image))
 server.send(image)

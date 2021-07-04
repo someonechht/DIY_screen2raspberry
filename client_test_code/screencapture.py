@@ -1,5 +1,4 @@
 # importing the required packages
-from os import wait
 from numpy.lib.type_check import imag
 import pyautogui
 import numpy as np
