@@ -21,8 +21,9 @@ server.send(bytes(str(resolution.width), 'utf8'))
 pyautogui.sleep(0.25)
 server.send(bytes(str(resolution.height), 'utf8'))
 pyautogui.sleep(0.25)
-image = screencapture.capture_screenshot()
-print(len(image))
-server.send(image)
+
+while(True):
+    image = screencapture.capture_screenshot()
+    server.send(image)
 
 server.close()
