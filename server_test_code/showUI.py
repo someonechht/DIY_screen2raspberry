@@ -7,7 +7,7 @@ computer = server()
 computer.start_server()
 
 
-window = pyglet.window.Window()
+window = pyglet.window.Window(fullscreen=True)
 label = pyglet.text.Label(computer.ip,
                           font_name='Times New Roman',
                           font_size=36,
@@ -18,14 +18,20 @@ label = pyglet.text.Label(computer.ip,
 @window.event
 def on_draw():
     window.clear()
-      
-    if computer.img != None:
+    if not computer.img == None:
         raw = computer.img.tobytes()
         image = pyglet.image.ImageData(computer.img.width, computer.img.height, 'RGB', raw, pitch=-computer.frame_width * 3)
         image.blit(0,0)
-    
 
 
+def update(dt):
+    if not computer.img == None:
+        raw = computer.img.tobytes()
+        image = pyglet.image.ImageData(computer.img.width, computer.img.height, 'RGB', raw, pitch=-computer.frame_width * 3)
+        image.blit(0,0)
 
+pyglet.clock.schedule_interval(update, 1/28.0)
 pyglet.app.run()
+
+
 computer.stop_server()

@@ -1,11 +1,8 @@
-import pyautogui
-import cv2
-import numpy as np
 import socket
 from PIL import Image
-from io import BytesIO
-import pyglet
 import threading
+import time
+import netifaces as ni
 
 class server():
 	def __init__(self):
@@ -14,19 +11,20 @@ class server():
 		self.thread = threading.Thread
 		self.frame_width = 0
 		self.frame_height = 0
-		self.image_data = bytearray
 		self.connected = False
-		self.ip = '192.168.0.241' # socket.gethostbyname(socket.gethostname())
+		ni.ifaddresses('wlp4s0')
+		self.ip = ni.ifaddresses('wlp4s0')[ni.AF_INET][0]['addr']
+		# self.ip = '192.168.0.241' # socket.gethostbyname(socket.gethostname())
 
 	def client_thread(self, client_socket, address):
 		self.connected = True
 
-		stream = client_socket.recv(1024)
+		stream = client_socket.recv(4)
 		if not stream:
 			self.connected = False
 		self.frame_width = int(stream)
 
-		stream = client_socket.recv(1024)
+		stream = client_socket.recv(4)
 		if not stream:
 			self.connected = False
 		self.frame_height = int(stream)
@@ -34,16 +32,19 @@ class server():
 		while(self.connected):
 			data = bytearray()
 			length = 0
-			while (length < self.frame_width*self.frame_height*4):
-				stream = client_socket.recv(self.frame_width*self.frame_height*4 - length)
+			t0= time.time()
+			while (length < self.frame_width*self.frame_height*3):
+				stream = client_socket.recv(self.frame_width*self.frame_height*3 - length)
 				data += stream
 				if not stream:
 					self.connected = False
 					break
 				length = len(data)
 			if self.connected:
-				self.image_data = data			
-				self.img = Image.frombytes("RGB", (self.frame_width, self.frame_height), bytes(data), "raw", "BGRX")
+				self.img = Image.frombytes("RGB", (self.frame_width, self.frame_height), bytes(data), "raw", "RGB")
+			t1 = time.time() - t0
+			print("Time elapsed: ", t1) # CPU seconds elapsed (floating point)
+
 			
 
 		
